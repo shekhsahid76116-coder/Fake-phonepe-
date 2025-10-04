@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Mock Payment Demo — NOT PhonePe</title>
+  <style>
+    :root{
+      --bg:#f4f6fb; --card:#fff; --accent:#4f46e5; --muted:#6b7280;
+      font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    }
+    body{background:var(--bg); margin:0; display:flex; min-height:100vh; align-items:center; justify-content:center;}
+    .card{background:var(--card); width:380px; padding:20px; border-radius:12px; box-shadow:0 6px 24px rgba(16,24,40,0.08);}
+    h1{margin:0 0 8px; font-size:18px;}
+    p.subtitle{margin:0 0 18px; color:var(--muted); font-size:13px;}
+    .note{background:#fff4e5; color:#7a4b00; padding:8px 10px; border-radius:8px; font-size:13px; margin-bottom:14px;}
+    .pay-row{display:flex; gap:10px; align-items:center; margin-bottom:14px;}
+    .qr{width:96px; height:96px; border-radius:8px; background:linear-gradient(135deg,#eef2ff,#fdf2f8); display:flex; align-items:center; justify-content:center; color:var(--muted); font-size:12px;}
+    .details{flex:1;}
+    .amount{font-weight:600; font-size:20px;}
+    .muted{color:var(--muted); font-size:13px;}
+    button.pay{width:100%; padding:12px 14px; border-radius:10px; border:0; background:var(--accent); color:white; font-weight:600; cursor:pointer; font-size:15px;}
+    .footer{margin-top:12px; font-size:12px; color:var(--muted); text-align:center;}
+    /* modal */
+    .overlay{position:fixed; inset:0; display:none; align-items:center; justify-content:center; background:rgba(2,6,23,0.5);}
+    .overlay.show{display:flex;}
+    .modal{background:white; padding:20px; width:360px; border-radius:12px; text-align:center;}
+    .success-icon{font-size:36px; margin-bottom:6px; color:green;}
+    .small{font-size:13px; color:var(--muted); margin-top:8px;}
+  </style>
+</head>
+<body>
+  <div class="card" role="main" aria-labelledby="title">
+    <h1 id="title">Mock Payment Demo — <span style="color:#d23636">NOT PhonePe</span></h1>
+    <p class="subtitle">This is a local demo page for prototype/testing only. It does not process real payments and is not affiliated with PhonePe or any provider.</p>
+
+    <div class="note">Use this demo for UI prototype or testing. Do NOT use it to impersonate real services.</div>
+
+    <div class="pay-row">
+      <div class="qr" aria-hidden="true">
+        QR<br/>PLACEHOLDER
+      </div>
+      <div class="details">
+        <div class="amount">₹ 199.00</div>
+        <div class="muted">To: Demo Merchant</div>
+      </div>
+    </div>
+
+    <label for="name" class="muted">Payer name</label>
+    <input id="name" placeholder="Your name" style="width:100%; padding:10px; margin:8px 0 14px; border-radius:8px; border:1px solid #e6e9ef;"/>
+
+    <button class="pay" id="payBtn">Simulate Pay</button>
+
+    <div class="footer">Tip: open this file locally or host on a test site (GitHub Pages). This page intentionally avoids real payment libraries.</div>
+  </div>
+
+  <div class="overlay" id="overlay" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="modal" id="modal">
+      <div class="success-icon">✔️</div>
+      <div style="font-weight:700; font-size:16px;">Payment Successful (Demo)</div>
+      <div class="small" id="modalText">Transaction ID: —</div>
+      <div style="margin-top:14px;">
+        <button id="closeBtn" style="padding:8px 12px; border-radius:8px; border:1px solid #e6e9ef; background:#fff; cursor:pointer;">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Simple demo behavior only — no real payment actions.
+    const payBtn = document.getElementById('payBtn');
+    const overlay = document.getElementById('overlay');
+    const modalText = document.getElementById('modalText');
+    const closeBtn = document.getElementById('closeBtn');
+
+    function generateTxId(){
+      // safe fake ID for demo (not linked to any service)
+      return 'DEMO-' + Math.random().toString(36).slice(2,10).toUpperCase();
+    }
+
+    payBtn.addEventListener('click', () => {
+      const name = document.getElementById('name').value.trim() || 'Anonymous';
+      const tx = generateTxId();
+      modalText.textContent = `Payer: ${name} · Transaction ID: ${tx} · Amount: ₹199`;
+      overlay.classList.add('show');
+      overlay.setAttribute('aria-hidden','false');
+    });
+
+    closeBtn.addEventListener('click', () => {
+      overlay.classList.remove('show');
+      overlay.setAttribute('aria-hidden','true');
+    });
+
+    // allow escape to close
+    document.addEventListener('keydown', (e)=>{ if(e.key==='Escape'){ overlay.classList.remove('show'); }});
+  </script>
+</body>
+</html>
